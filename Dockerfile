@@ -1,17 +1,14 @@
 FROM golang:1.23
 
+ENV CGO_ENABLED=0 \
+    PORT=8803
+
 WORKDIR /app
 
-COPY . .
+COPY repo/ .
 
-RUN go test ./... \
-    && git init -b main \
-    && git config user.email "docker@example.test" \
-    && git config user.name "Docker Build" \
-    && git add . \
-    && git commit -m "Initial idempotency keys fixture"
+RUN go build -o /app/server .
 
-ENV PORT=8803
 EXPOSE 8803
 
-CMD ["go", "run", "."]
+CMD ["/app/server"]
